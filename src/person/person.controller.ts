@@ -8,11 +8,13 @@ import {
   ValidationPipe,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { GetPersonQuery } from './queries/impl/get-person.query';
 import { CreatePersonCommand } from './commands/impl/create-person.command';
 import { UpdatePersonCommand } from './commands/impl/update-person.command';
+import { DeletePersonCommand } from './commands/impl/delete-person.command';
 @Controller('person')
 export class PersonController {
   constructor(
@@ -43,5 +45,10 @@ export class PersonController {
         updatePersonCommand.age,
       ),
     );
+  }
+
+  @Delete(':id')
+  async deletePerson(@Param('id') id: number) {
+    return this.commandBus.execute(new DeletePersonCommand(id));
   }
 }
